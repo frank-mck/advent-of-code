@@ -1,4 +1,4 @@
-const data = `Card   1: 27 61 49 69 58 44  2 29 39 10 | 97 96 49 78 26 58 27 77 69  9 39 88 53 10  2 29 61 62 48 87 18 44 74 34 11
+const data1 = `Card   1: 27 61 49 69 58 44  2 29 39 10 | 97 96 49 78 26 58 27 77 69  9 39 88 53 10  2 29 61 62 48 87 18 44 74 34 11
 Card   2: 65 22 99 75 72 29 38 82 80 66 | 87 15 21 50 55 72  4 54 46 29 95  2 65 75 18 89 99 80 38 82 56 33 22 66 71
 Card   3: 27 95 96 34 14 42 40 60 50 93 | 35 95 22 34 50 27 29 77 78  4  5 61 93  8 59 63 16 45 80 81 92 23 42 88 82
 Card   4: 58 73 96 88 51 32  1 40 19 85 | 93 72  7 85 52 51  2 96 40 90 32 57 89 12 88 44 19 53 58 78 73 25 50  1 84
@@ -202,9 +202,18 @@ Card 201: 97 48 74 15  5  4 40 64 95 33 | 83 54 73 81 37 53 85 20 68 51 82 41 27
 Card 202: 83 90  4 89 57 72 30 13  8 23 | 99 33 38 70 39 12 71 35 46 94 82 79 44 62 98 74 64 16 32 66 65 95 47 58 23
 Card 203: 38 61 14 84 65 96 90 69 53 11 | 24 50 66 56 26 25  3 60 95 19 10 21 12 87 92 37 99 76 71 57 17 55 30  6 44`;
 
-const dataArray = data.trim().split("\n");
+const data2 = `Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
+Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
+Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
+Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
+Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
+Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11`;
+
+const dataArray = data1.trim().split("\n");
 const gameObject = {};
 const score = [];
+const scratchCardsWon = [];
+let cardNumberWinningScore = {};
 
 dataArray.map((string) => {
   const numbers = string.match(/([\d\s]+)/gi);
@@ -215,7 +224,14 @@ dataArray.map((string) => {
   gameObject[game] = { myNumbers, winningNumbers };
 });
 
-for (let i = 1; i < dataArray.length; i++) {
+const addWinningScratchCards = (index, numOfScratchCards) => {
+  cardNumberWinningScore[index] = numOfScratchCards;
+  for (let i = 1; i < numOfScratchCards; i++) {
+    scratchCardsWon.push(gameObject[index + i]);
+  }
+};
+
+for (let i = 1; i <= dataArray.length; i++) {
   const { myNumbers, winningNumbers } = gameObject[i];
   const matchedNumbers = myNumbers
     .split(" ")
@@ -223,35 +239,46 @@ for (let i = 1; i < dataArray.length; i++) {
 
   switch (matchedNumbers.length) {
     case 0:
+      addWinningScratchCards(i, 0);
       break;
     case 1:
+      addWinningScratchCards(i, 1);
       score.push(1);
       break;
     case 2:
+      addWinningScratchCards(i, 2);
       score.push(2);
       break;
     case 3:
+      addWinningScratchCards(i, 3);
       score.push(4);
       break;
     case 4:
+      addWinningScratchCards(i, 4);
       score.push(8);
       break;
     case 5:
+      addWinningScratchCards(i, 5);
       score.push(16);
       break;
     case 6:
+      addWinningScratchCards(i, 6);
       score.push(32);
       break;
     case 7:
+      addWinningScratchCards(i, 7);
       score.push(64);
       break;
     case 8:
+      addWinningScratchCards(i, 8);
       score.push(128);
       break;
     case 9:
+      addWinningScratchCards(i, 9);
       score.push(256);
       break;
     case 10:
+      addWinningScratchCards(i, 10);
       score.push(512);
       break;
     default:
@@ -259,4 +286,18 @@ for (let i = 1; i < dataArray.length; i++) {
   }
 }
 
+// part one answer
 console.log(score.reduce((calc, sum) => +calc + +sum));
+
+// part two answer
+console.log(cardNumberWinningScore);
+
+for (let i = 1; i <= dataArray.length; i++) {
+  cardNumberWinningScore[i] = {
+    matchedNumbers: cardNumberWinningScore[i],
+    copies: 0,
+  };
+}
+
+// going to calculate how many copies a card gets and do a multiplication
+console.log(cardNumberWinningScore);
