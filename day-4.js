@@ -251,21 +251,21 @@ for (let i = 1; i <= dataArray.length; i++) {
 console.log(score.reduce((calc, sum) => +calc + +sum));
 
 // part two answer
-const copies = [];
+const cards = [];
 
 for (let i = 1; i <= dataArray.length; i++) {
-  copies.push({
+  cards.push({
     card: i,
     matchedNumbers: cardNumberWinningScore[i],
     copies: 1,
   });
 }
 
-for (let i = 0; i < copies.length; i++) {
-  const { matchedNumbers } = copies[i];
+for (let i = 0; i < cards.length; i++) {
+  const { matchedNumbers, copies } = cards[i];
   for (let copy = i + 1; copy <= i + matchedNumbers; copy++) {
-    copies[copy].copies = copies[copy].copies + copies[i].copies;
+    cards[copy].copies = cards[copy].copies + copies;
   }
 }
 
-console.log(copies.map((n) => n.copies).reduce((b, n) => b + n));
+console.log(cards.map((n) => n.copies).reduce((b, n) => b + n));
