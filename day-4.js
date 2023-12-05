@@ -239,50 +239,11 @@ for (let i = 1; i <= dataArray.length; i++) {
 
   switch (matchedNumbers.length) {
     case 0:
-      addWinningScratchCards(i, 0);
-      break;
-    case 1:
-      addWinningScratchCards(i, 1);
-      score.push(1);
-      break;
-    case 2:
-      addWinningScratchCards(i, 2);
-      score.push(2);
-      break;
-    case 3:
-      addWinningScratchCards(i, 3);
-      score.push(4);
-      break;
-    case 4:
-      addWinningScratchCards(i, 4);
-      score.push(8);
-      break;
-    case 5:
-      addWinningScratchCards(i, 5);
-      score.push(16);
-      break;
-    case 6:
-      addWinningScratchCards(i, 6);
-      score.push(32);
-      break;
-    case 7:
-      addWinningScratchCards(i, 7);
-      score.push(64);
-      break;
-    case 8:
-      addWinningScratchCards(i, 8);
-      score.push(128);
-      break;
-    case 9:
-      addWinningScratchCards(i, 9);
-      score.push(256);
-      break;
-    case 10:
-      addWinningScratchCards(i, 10);
-      score.push(512);
+      addWinningScratchCards(i, matchedNumbers.length);
       break;
     default:
-      continue;
+      addWinningScratchCards(i, matchedNumbers.length);
+      score.push(2 ** (matchedNumbers.length - 1));
   }
 }
 
@@ -290,14 +251,21 @@ for (let i = 1; i <= dataArray.length; i++) {
 console.log(score.reduce((calc, sum) => +calc + +sum));
 
 // part two answer
-console.log(cardNumberWinningScore);
+const copies = [];
 
 for (let i = 1; i <= dataArray.length; i++) {
-  cardNumberWinningScore[i] = {
+  copies.push({
+    card: i,
     matchedNumbers: cardNumberWinningScore[i],
-    copies: 0,
-  };
+    copies: 1,
+  });
 }
 
-// going to calculate how many copies a card gets and do a multiplication
-console.log(cardNumberWinningScore);
+for (let i = 0; i < copies.length; i++) {
+  const { matchedNumbers } = copies[i];
+  for (let copy = i + 1; copy <= i + matchedNumbers; copy++) {
+    copies[copy].copies = copies[copy].copies + copies[i].copies;
+  }
+}
+
+console.log(copies.map((n) => n.copies).reduce((b, n) => b + n));
